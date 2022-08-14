@@ -24,6 +24,14 @@ namespace KeyFunctionsWinfowsFormsApp.DLLDeclarations
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
+        /// <summary>
+        /// source links:
+        /// https://rito15.github.io/posts/cs-global-mouse-hook/
+        /// https://stackoverflow.com/q/8739523/8075004
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern int SetCursorPos(int x, int y);
     }

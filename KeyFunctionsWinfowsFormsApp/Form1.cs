@@ -12,9 +12,9 @@ namespace KeyFunctionsWinfowsFormsApp
     {
         private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        // Note: for the application hook, use the Hook.AppEvents() instead
+        private readonly IKeyboardMouseEvents _GlobalHook = Hook.GlobalEvents();
         private readonly ClipboardListenerService _clipboardListenerService;
-
-        private IKeyboardMouseEvents m_GlobalHook;
 
         public Form1()
         {
@@ -23,27 +23,43 @@ namespace KeyFunctionsWinfowsFormsApp
             _clipboardListenerService = new ClipboardListenerService(this);
         }
 
-        public void Subscribe()
+        private void Form1_OnLoad(object sender, EventArgs e)
         {
-            // Note: for the application hook, use the Hook.AppEvents() instead
-            m_GlobalHook = Hook.GlobalEvents();
+            //_clipboardListenerService.Subscribe();
 
-            //m_GlobalHook.MouseDownExt += GlobalHookMouseDownExt;
-            //m_GlobalHook.MouseMoveExt += GlobalHookMouseDownExt;
-            //m_GlobalHook.KeyPress += GlobalHookKeyPress;
-            m_GlobalHook.KeyUp += GlobalHookKeyPress;
+            //Subscribe();
+
+            //_ = User32.SetCursorPos(0, 0); // working
         }
 
-        //private void GlobalHookKeyPress(object sender, KeyPressEventArgs e)
-        private void GlobalHookKeyPress(object sender, KeyEventArgs e)
+        private void Form1_OnClosing(object sender, FormClosingEventArgs e)
         {
-            if (e.Control && e.KeyCode.Equals(Keys.C))
+            //Unsubscribe();
+
+            // It is recommened to dispose it
+            _GlobalHook.Dispose();
+        }
+
+        protected override void WndProc(ref Message message)
+        {
+            _clipboardListenerService.WndProc(ref message, base.WndProc);
+        }
+
+        public void Subscribe()
+        {
+            _GlobalHook.MouseMoveExt += GlobalHook_MouseMoveExt;
+            _GlobalHook.KeyUp += GlobalHook_KeyUp;
+        }
+
+        private void GlobalHook_KeyUp(object sender, KeyEventArgs e)
+        {
+            //if (e.Control && e.KeyCode.Equals(Keys.C))
             {
                 //Console.WriteLine("KeyValue:{0}, KeyData:{1}, KeyCode:{2}, Control:{3}, Alt:{4}, Shift:{5}", e.KeyValue, e.KeyData, e.KeyCode, e.Control, e.Alt, e.Shift);
             }
         }
 
-        private void GlobalHookMouseDownExt(object sender, MouseEventExtArgs e)
+        private void GlobalHook_MouseMoveExt(object sender, MouseEventExtArgs e)
         {
             //Console.WriteLine("MouseDown: \t{0}; \t System Timestamp: \t{1}", e.Button, e.Timestamp);
             //Console.WriteLine("X: {0}; Y: {1}; System Timestamp: {2}", e.X, e.Y, e.Timestamp);
@@ -54,34 +70,8 @@ namespace KeyFunctionsWinfowsFormsApp
 
         public void Unsubscribe()
         {
-            m_GlobalHook.MouseDownExt -= GlobalHookMouseDownExt;
-            m_GlobalHook.KeyUp -= GlobalHookKeyPress;
-
-            // It is recommened to dispose it
-            m_GlobalHook.Dispose();
-        }
-
-
-        protected override void WndProc(ref Message message)
-        {
-            _clipboardListenerService.WndProc(ref message, base.WndProc);
-        }
-
-        private void Form1_OnLoad(object sender, EventArgs e)
-        {
-            //User32.SetCursorPos(0, 0); // working
-
-            //_clipboardListenerService.Subscribe();
-
-            //Task.Run(() => PostInit());
-            //Console.WriteLine(AppSettings.MyKeyInt);
-            //Console.WriteLine(AppSettings.MyKeyBool);
-            //Subscribe();
-        }
-
-        private void Form1_OnClosing(object sender, FormClosingEventArgs e)
-        {
-            //Unsubscribe();
+            _GlobalHook.MouseDownExt -= GlobalHook_MouseMoveExt;
+            _GlobalHook.KeyUp -= GlobalHook_KeyUp;
         }
     }
 }
