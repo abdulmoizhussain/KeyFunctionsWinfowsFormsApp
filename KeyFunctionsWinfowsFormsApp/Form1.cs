@@ -1,4 +1,5 @@
 using Gma.System.MouseKeyHook;
+using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
 using KeyFunctionsWinfowsFormsApp.Services;
 using KeyFunctionsWinfowsFormsApp.Utils;
 using System.Diagnostics;
@@ -9,7 +10,11 @@ namespace KeyFunctionsWinfowsFormsApp
 {
     public partial class Form1 : Form
     {
+        private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private readonly ClipboardListenerService _clipboardListenerService;
+
+        private IKeyboardMouseEvents m_GlobalHook;
 
         public Form1()
         {
@@ -17,58 +22,6 @@ namespace KeyFunctionsWinfowsFormsApp
 
             _clipboardListenerService = new ClipboardListenerService(this);
         }
-
-        [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(Int32 i);
-
-        [DllImport("user32.dll")]
-        static extern bool ClipCursor([In()] IntPtr lpRect);
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct RECT
-        {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-        };
-
-        [DllImport("user32.dll")]
-        static extern bool ClipCursor([In()] ref RECT lpRect);
-
-        [DllImport("user32.dll")]
-        //static extern int ShowCursor([In()] bool bShow);
-        static extern int ShowCursor(bool bShow);
-
-        [DllImport("user32.dll")]
-        static extern int SetCursorPos(int x, int y);
-
-        public void PostInit()
-        {
-            return;
-            //Cursor.Hide();
-            SetCursorPos(0, 0);
-
-
-            //ClipCursor(IntPtr.Zero);
-            Console.WriteLine("here");
-            while (true)
-            {
-                for (int index = 32; index < 127; index++)
-                {
-                    int keyState = GetAsyncKeyState(index);
-                    //if (keyState == -32767)
-                    if (keyState == 32769)
-                    {
-                        Console.WriteLine(index + ",");
-                    }
-                }
-
-                Thread.Sleep(5);
-            }
-        }
-
-        private IKeyboardMouseEvents m_GlobalHook;
 
         public void Subscribe()
         {
@@ -82,13 +35,10 @@ namespace KeyFunctionsWinfowsFormsApp
         }
 
         //private void GlobalHookKeyPress(object sender, KeyPressEventArgs e)
-        private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private void GlobalHookKeyPress(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode.Equals(Keys.C))
             {
-                ClipboardHelper.TryGetText(out string clipText);
-                Console.WriteLine($"clip: {clipText}");
                 //Console.WriteLine("KeyValue:{0}, KeyData:{1}, KeyCode:{2}, Control:{3}, Alt:{4}, Shift:{5}", e.KeyValue, e.KeyData, e.KeyCode, e.Control, e.Alt, e.Shift);
             }
         }
@@ -119,7 +69,9 @@ namespace KeyFunctionsWinfowsFormsApp
 
         private void Form1_OnLoad(object sender, EventArgs e)
         {
-            _clipboardListenerService.Subscribe();
+            //User32.SetCursorPos(0, 0); // working
+
+            //_clipboardListenerService.Subscribe();
 
             //Task.Run(() => PostInit());
             //Console.WriteLine(AppSettings.MyKeyInt);

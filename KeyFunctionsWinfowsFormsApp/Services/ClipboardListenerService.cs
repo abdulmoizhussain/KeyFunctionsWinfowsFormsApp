@@ -53,7 +53,7 @@ namespace KeyFunctionsWinfowsFormsApp.Services
                     Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
 
                     ClipboardHelper.TryGetText(out string clipText);
-                    Console.WriteLine(clipText);
+                    Console.WriteLine($"clip: {clipText}");
 
                     //
                     // Each window that receives the WM_DRAWCLIPBOARD message 
