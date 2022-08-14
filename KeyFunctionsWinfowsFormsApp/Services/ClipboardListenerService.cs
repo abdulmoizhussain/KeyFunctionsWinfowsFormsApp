@@ -1,4 +1,5 @@
-﻿using KeyFunctionsWinfowsFormsApp.Utils;
+﻿using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
+using KeyFunctionsWinfowsFormsApp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

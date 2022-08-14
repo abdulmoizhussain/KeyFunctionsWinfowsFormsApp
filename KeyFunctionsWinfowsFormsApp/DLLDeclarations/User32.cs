@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyFunctionsWinfowsFormsApp.Services
+namespace KeyFunctionsWinfowsFormsApp.DLLDeclarations
 {
     /// <summary>
     /// Windows User32 DLL declarations
