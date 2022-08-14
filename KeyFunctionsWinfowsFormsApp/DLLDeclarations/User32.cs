@@ -34,5 +34,14 @@ namespace KeyFunctionsWinfowsFormsApp.DLLDeclarations
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern int SetCursorPos(int x, int y);
+
+        /// <summary>
+        /// source links:
+        /// https://stackoverflow.com/a/55644229/8075004
+        /// </summary>
+        /// <param name="lpPoint"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out Point lpPoint);
     }
 }
