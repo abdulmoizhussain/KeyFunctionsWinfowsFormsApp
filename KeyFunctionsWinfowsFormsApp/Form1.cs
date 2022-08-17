@@ -1,4 +1,5 @@
 using Gma.System.MouseKeyHook;
+using KeyFunctions.Repository;
 using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
 using KeyFunctionsWinfowsFormsApp.Services;
 using KeyFunctionsWinfowsFormsApp.Utils;
@@ -20,11 +21,22 @@ namespace KeyFunctionsWinfowsFormsApp
         {
             InitializeComponent();
 
+            // source links:
+            // https://stackoverflow.com/a/12816899
+            //var Width = Screen.PrimaryScreen.Bounds.Width;
+            //var Height = Screen.PrimaryScreen.Bounds.Height;
+            //var Size = Screen.PrimaryScreen.Bounds.Size;
+
             _clipboardListenerService = new ClipboardListenerService(this);
         }
 
         private void Form1_OnLoad(object sender, EventArgs e)
         {
+            string sqliteConnString = "Data Source=.\\KeyFunctions.db;Version=3;";
+            string provider = "System.Data.SqlClient";
+
+            DbContext.Check();
+
             //_clipboardListenerService.Subscribe();
 
             //Subscribe();
