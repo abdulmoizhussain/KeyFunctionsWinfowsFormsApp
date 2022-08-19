@@ -1,10 +1,11 @@
-﻿using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
-using KeyFunctionsWinfowsFormsApp.Utils;
+﻿using KeyFunctions.Common.Enums;
+using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace KeyFunctionsWinfowsFormsApp.Services
@@ -17,6 +18,8 @@ namespace KeyFunctionsWinfowsFormsApp.Services
     public class ClipboardListenerService
     {
         public delegate void WndProcDelegate(ref Message message);
+
+        private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly Form _form;
 
@@ -52,7 +55,7 @@ namespace KeyFunctionsWinfowsFormsApp.Services
                 case Msgs.WM_DRAWCLIPBOARD:
                     Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
 
-                    ClipboardHelper.TryGetText(out string clipText);
+                    ClipboardService.TryGetText(out string clipText);
                     Console.WriteLine($"clip: {clipText}");
 
                     //

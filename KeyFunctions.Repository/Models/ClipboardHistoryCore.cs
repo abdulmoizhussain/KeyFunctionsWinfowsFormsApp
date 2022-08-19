@@ -1,4 +1,5 @@
 ﻿using KeyFunctions.Common.Enums;
+using KeyFunctions.Common.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,8 +11,7 @@ namespace KeyFunctions.Repository.Models
 {
     public class ClipboardHistoryCore
     {
-        private const string s_format = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff";
-
+        public int Id { get; private set; }
         public string ClipData { get; set; }
 
         private int _clipDataTypeInt;
@@ -43,7 +43,7 @@ namespace KeyFunctions.Repository.Models
             set
             {
                 _dateTime = value;
-                _dateTimeStamp = _dateTime.ToString(s_format);
+                _dateTimeStamp = _dateTime.ToString(Globals.DateTimeStringFormat);
             }
         }
 
@@ -54,7 +54,7 @@ namespace KeyFunctions.Repository.Models
             set
             {
                 _dateTimeStamp = value;
-                _dateTime = DateTime.ParseExact(_dateTimeStamp, s_format, CultureInfo.InvariantCulture);
+                _dateTime = DateTime.ParseExact(_dateTimeStamp, Globals.DateTimeStringFormat, CultureInfo.InvariantCulture);
             }
         }
     }

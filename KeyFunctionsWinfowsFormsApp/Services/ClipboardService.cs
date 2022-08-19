@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KeyFunctionsWinfowsFormsApp.Utils
+namespace KeyFunctionsWinfowsFormsApp.Services
 {
-    public class ClipboardHelper
+    public class ClipboardService
     {
         [STAThread]
         public static bool TryGetText(out string clipboardText)

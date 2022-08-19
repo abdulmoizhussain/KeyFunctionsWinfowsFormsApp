@@ -1,8 +1,8 @@
 using Gma.System.MouseKeyHook;
 using KeyFunctions.Repository;
+using KeyFunctions.Repository.Repositories;
 using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
 using KeyFunctionsWinfowsFormsApp.Services;
-using KeyFunctionsWinfowsFormsApp.Utils;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -11,45 +11,29 @@ namespace KeyFunctionsWinfowsFormsApp
 {
     public partial class Form1 : Form
     {
-        private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        // Note: for the application hook, use the Hook.AppEvents() instead
-        private readonly IKeyboardMouseEvents _GlobalHook = Hook.GlobalEvents();
         private readonly ClipboardListenerService _clipboardListenerService;
+        private readonly KeyboardListenerService _keyboardListenerService;
 
         public Form1()
         {
             InitializeComponent();
 
-            // source links:
-            // https://stackoverflow.com/a/12816899
-            //var Width = Screen.PrimaryScreen.Bounds.Width;
-            //var Height = Screen.PrimaryScreen.Bounds.Height;
-            //var Size = Screen.PrimaryScreen.Bounds.Size;
-
+            _keyboardListenerService = new KeyboardListenerService();
             _clipboardListenerService = new ClipboardListenerService(this);
         }
 
         private void Form1_OnLoad(object sender, EventArgs e)
         {
-            string sqliteConnString = "Data Source=.\\KeyFunctions.db;Version=3;";
-            string provider = "System.Data.SqlClient";
+            ClipboardHistoryRepository.AddOne();
+            ClipboardHistoryRepository.AddOne();
 
-            DbContext.Check();
-
-            //_clipboardListenerService.Subscribe();
-
-            //Subscribe();
-
-            //_ = User32.SetCursorPos(0, 0); // working
+            var asdf = ClipboardHistoryRepository.GetAll();
         }
 
         private void Form1_OnClosing(object sender, FormClosingEventArgs e)
         {
-            //Unsubscribe();
-
-            // It is recommened to dispose it
-            _GlobalHook.Dispose();
+            _keyboardListenerService.UnSubscribe();
+            _keyboardListenerService.Dispose();
         }
 
         protected override void WndProc(ref Message message)
@@ -57,33 +41,17 @@ namespace KeyFunctionsWinfowsFormsApp
             _clipboardListenerService.WndProc(ref message, base.WndProc);
         }
 
-        public void Subscribe()
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            _GlobalHook.MouseMoveExt += GlobalHook_MouseMoveExt;
-            _GlobalHook.KeyUp += GlobalHook_KeyUp;
         }
 
-        private void GlobalHook_KeyUp(object sender, KeyEventArgs e)
+        #region BUSINESS METHODS
+        private void EnableDisbleKeyboardListener()
         {
-            //if (e.Control && e.KeyCode.Equals(Keys.C))
-            {
-                //Console.WriteLine("KeyValue:{0}, KeyData:{1}, KeyCode:{2}, Control:{3}, Alt:{4}, Shift:{5}", e.KeyValue, e.KeyData, e.KeyCode, e.Control, e.Alt, e.Shift);
-            }
         }
-
-        private void GlobalHook_MouseMoveExt(object sender, MouseEventExtArgs e)
+        private void EnableDisbleClipboardListener()
         {
-            //Console.WriteLine("MouseDown: \t{0}; \t System Timestamp: \t{1}", e.Button, e.Timestamp);
-            //Console.WriteLine("X: {0}; Y: {1}; System Timestamp: {2}", e.X, e.Y, e.Timestamp);
-
-            // uncommenting the following line will suppress the middle mouse button click
-            // if (e.Buttons == MouseButtons.Middle) { e.Handled = true; }
         }
-
-        public void Unsubscribe()
-        {
-            _GlobalHook.MouseDownExt -= GlobalHook_MouseMoveExt;
-            _GlobalHook.KeyUp -= GlobalHook_KeyUp;
-        }
+        #endregion
     }
 }
