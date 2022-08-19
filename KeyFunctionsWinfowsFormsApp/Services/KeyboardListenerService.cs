@@ -18,6 +18,15 @@ namespace KeyFunctionsWinfowsFormsApp.Services
         private static readonly int s_screenWidth = Screen.PrimaryScreen.Bounds.Width;
         private static readonly int s_screenHeight = Screen.PrimaryScreen.Bounds.Height;
 
+        private readonly Point _point_MiddleTop = new(s_screenWidth / 2, 0);
+        private readonly Point _point_TopRight = new(s_screenWidth, 0);
+        private readonly Point _point_MiddleRight = new(s_screenWidth, s_screenHeight / 2);
+        private readonly Point _point_BottomRight = new(s_screenWidth, s_screenHeight);
+        private readonly Point _point_MiddleBottom = new(s_screenWidth / 2, s_screenHeight);
+        private readonly Point _point_BottomLeft = new(0, s_screenHeight);
+        private readonly Point _point_MiddleLeft = new(0, s_screenHeight / 2);
+        private readonly Point _point_TopLeft = new(0, 0);
+
         public KeyboardListenerService()
         {
             //_ = User32.SetCursorPos(0, 0); // working
