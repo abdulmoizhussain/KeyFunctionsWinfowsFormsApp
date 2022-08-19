@@ -41,16 +41,47 @@ namespace KeyFunctionsWinfowsFormsApp
             _clipboardListenerService.WndProc(ref message, base.WndProc);
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxSetCursorPosition_CheckedChanged(object sender, EventArgs e)
         {
+            EnableOrDisbleKeyboardListener();
+        }
+        private void checkBoxMaintainClipHistory_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableOrDisbleClipboardListener();
+        }
+        private void checkBoxCleanSpecialCharacters_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableOrDisbleClipboardListener();
         }
 
         #region BUSINESS METHODS
-        private void EnableDisbleKeyboardListener()
+        private void EnableOrDisbleKeyboardListener()
         {
+            if (checkBoxSetCursorPosition.Checked)
+            {
+                _keyboardListenerService.Subscribe();
+            }
+            else
+            {
+                _keyboardListenerService.UnSubscribe();
+            }
         }
-        private void EnableDisbleClipboardListener()
+        private void EnableOrDisbleClipboardListener()
         {
+            if (checkBoxMaintainClipHistory.Checked || checkBoxCleanSpecialCharacters.Checked)
+            {
+                if (!_clipboardListenerService.IsSubscribed)
+                {
+                    _clipboardListenerService.Subscribe();
+                }
+
+                _clipboardListenerService.MaintainClipHistory = checkBoxMaintainClipHistory.Checked;
+                _clipboardListenerService.CleanSpecialCharactersFromClip = checkBoxCleanSpecialCharacters.Checked;
+            }
+            else
+            {
+                _clipboardListenerService.Unsubscribe();
+            }
         }
         #endregion
     }

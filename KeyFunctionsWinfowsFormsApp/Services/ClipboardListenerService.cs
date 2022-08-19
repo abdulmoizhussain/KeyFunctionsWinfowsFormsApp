@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace KeyFunctionsWinfowsFormsApp.Services
 {
@@ -25,6 +26,10 @@ namespace KeyFunctionsWinfowsFormsApp.Services
 
         private IntPtr _clipboardViewerNext;
 
+        public bool MaintainClipHistory { get; set; }
+        public bool CleanSpecialCharactersFromClip { get; set; }
+        public bool IsSubscribed { get; private set; }
+
         public ClipboardListenerService(Form form)
         {
             _form = form;
@@ -34,12 +39,14 @@ namespace KeyFunctionsWinfowsFormsApp.Services
         {
             //_clipboardViewerNext = User32.SetClipboardViewer(this.Handle);
             _clipboardViewerNext = User32.SetClipboardViewer(_form.Handle);
+            IsSubscribed = true;
         }
 
         public void Unsubscribe()
         {
             //User32.ChangeClipboardChain(this.Handle, _ClipboardViewerNext);
             User32.ChangeClipboardChain(_form.Handle, _clipboardViewerNext);
+            IsSubscribed = false;
         }
 
         public void WndProc(ref Message message, WndProcDelegate wndProcBase)
@@ -53,10 +60,9 @@ namespace KeyFunctionsWinfowsFormsApp.Services
                 // window to display the new content of the clipboard.
                 //
                 case Msgs.WM_DRAWCLIPBOARD:
-                    Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
 
-                    ClipboardService.TryGetText(out string clipText);
-                    Console.WriteLine($"clip: {clipText}");
+                    // Here you will be able to grab clipboard data.
+                    PerformClipboardManipulation(message);
 
                     //
                     // Each window that receives the WM_DRAWCLIPBOARD message 
@@ -108,6 +114,23 @@ namespace KeyFunctionsWinfowsFormsApp.Services
                     //base.WndProc(ref message);
                     wndProcBase(ref message);
                     break;
+            }
+        }
+
+        private void PerformClipboardManipulation(Message message)
+        {
+            //Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
+            ClipboardService.TryGetText(out string clipText);
+            Console.WriteLine($"clip: {clipText}");
+
+            if (MaintainClipHistory)
+            {
+                // save the clip.
+            }
+
+            if (CleanSpecialCharactersFromClip)
+            {
+                // clean the clipboard text
             }
         }
     }

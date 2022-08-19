@@ -43,7 +43,7 @@
             this.checkBoxSetCursorPosition.Text = "Set cursor position to one of the following corners of Primary Screen while typin" +
     "g.";
             this.checkBoxSetCursorPosition.UseVisualStyleBackColor = true;
-            this.checkBoxSetCursorPosition.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBoxSetCursorPosition.CheckedChanged += new System.EventHandler(this.checkBoxSetCursorPosition_CheckedChanged);
             // 
             // checkBoxMaintainClipHistory
             // 
@@ -54,6 +54,7 @@
             this.checkBoxMaintainClipHistory.TabIndex = 1;
             this.checkBoxMaintainClipHistory.Text = "Maintain Clipboard History";
             this.checkBoxMaintainClipHistory.UseVisualStyleBackColor = true;
+            this.checkBoxMaintainClipHistory.CheckedChanged += new System.EventHandler(this.checkBoxMaintainClipHistory_CheckedChanged);
             // 
             // checkBoxCleanSpecialCharacters
             // 
@@ -64,6 +65,7 @@
             this.checkBoxCleanSpecialCharacters.TabIndex = 2;
             this.checkBoxCleanSpecialCharacters.Text = "Clean special characters from clipboard-text which prepend: \'mis \'";
             this.checkBoxCleanSpecialCharacters.UseVisualStyleBackColor = true;
+            this.checkBoxCleanSpecialCharacters.CheckedChanged += new System.EventHandler(this.checkBoxCleanSpecialCharacters_CheckedChanged);
             // 
             // Form1
             // 
@@ -74,7 +76,7 @@
             this.Controls.Add(this.checkBoxMaintainClipHistory);
             this.Controls.Add(this.checkBoxSetCursorPosition);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Key Functions";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_OnClosing);
             this.Load += new System.EventHandler(this.Form1_OnLoad);
             this.ResumeLayout(false);
