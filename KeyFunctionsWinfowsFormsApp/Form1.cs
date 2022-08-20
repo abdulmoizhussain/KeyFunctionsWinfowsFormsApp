@@ -24,10 +24,6 @@ namespace KeyFunctionsWinfowsFormsApp
 
         private void Form1_OnLoad(object sender, EventArgs e)
         {
-            ClipboardHistoryRepository.AddOrUpdateOne("asdfasdf" + new Random().Next(100, 999).ToString());
-            ClipboardHistoryRepository.AddOrUpdateOne("asdfasdf" + new Random().Next(100, 999).ToString());
-            ClipboardHistoryRepository.AddOrUpdateOne("asdfasdf");
-
             var asdf = ClipboardHistoryRepository.GetAll();
         }
 

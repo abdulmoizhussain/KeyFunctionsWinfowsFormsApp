@@ -22,22 +22,21 @@ namespace KeyFunctions.Repository.Repositories
             return historyList.ToList();
         }
 
-        public static void AddOrUpdateOne(string clipData)
+        public static void AddOrUpdateOne(string clipData, ClipDataType clipDataType)
         {
             var datetimeNow = DateTime.Now;
 
             using var dbConnection = DbContext.GetConnection();
 
-            string query = "SELECT * from ClipboardHistory WHERE ClipData = @ClipData LIMIT 1";
-            var param = new { ClipData = clipData };
-            var result = dbConnection.Query<ClipboardHistoryCore>(query, param).FirstOrDefault();
+            string query = "SELECT * from ClipboardHistory WHERE ClipData = @clipData LIMIT 1";
+            var result = dbConnection.Query<ClipboardHistoryCore>(query, new { clipData }).FirstOrDefault();
 
             if (result is null)
             {
                 var data = new ClipboardHistoryCore
                 {
                     ClipData = clipData,
-                    ClipDataType = ClipDataType.Text,
+                    ClipDataType = clipDataType,
                     DateTime = datetimeNow,
                     LastRepeated = datetimeNow,
                 };
@@ -48,6 +47,12 @@ namespace KeyFunctions.Repository.Repositories
                 var updateParam = new { LastRepeatedTicks = datetimeNow.Ticks, Id = result.Id };
                 dbConnection.Execute("UPDATE ClipboardHistory SET LastRepeatedTicks = @LastRepeatedTicks WHERE Id = @Id", updateParam);
             }
+        }
+
+        public static void DeleteAll()
+        {
+            using var dbConnection = DbContext.GetConnection();
+            dbConnection.Execute("SELECT from ClipboardHistory");
         }
     }
 }

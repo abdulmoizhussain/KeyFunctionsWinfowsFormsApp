@@ -1,4 +1,5 @@
 ﻿using KeyFunctions.Common.Enums;
+using KeyFunctions.Repository.Repositories;
 using KeyFunctionsWinfowsFormsApp.DLLDeclarations;
 using System;
 using System.Collections.Generic;
@@ -120,17 +121,25 @@ namespace KeyFunctionsWinfowsFormsApp.Services
         private void PerformClipboardManipulation(Message message)
         {
             //Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
-            ClipboardService.TryGetText(out string clipText);
+            bool isText = ClipboardService.TryGetText(out string clipText);
             Console.WriteLine($"clip: {clipText}");
 
             if (MaintainClipHistory)
             {
                 // save the clip.
+                if (isText)
+                {
+                    ClipboardHistoryRepository.AddOrUpdateOne(clipText, ClipDataType.Text);
+                }
             }
 
             if (CleanSpecialCharactersFromClip)
             {
                 // clean the clipboard text
+                if (isText && s_regexMis.IsMatch(clipText))
+                {
+
+                }
             }
         }
     }
