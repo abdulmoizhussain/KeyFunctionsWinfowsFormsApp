@@ -57,5 +57,27 @@ namespace KeyFunctions.Repository.Models
                 _dateTime = DateTime.ParseExact(_dateTimeStamp, Globals.DateTimeStringFormat, CultureInfo.InvariantCulture);
             }
         }
+
+        private DateTime _lastRepeated;
+        public DateTime LastRepeated
+        {
+            get => _lastRepeated;
+            set
+            {
+                _lastRepeated = value;
+                _lastRepeatedTicks = _lastRepeated.Ticks;
+            }
+        }
+
+        private long _lastRepeatedTicks;
+        public long LastRepeatedTicks
+        {
+            get => _lastRepeatedTicks;
+            set
+            {
+                _lastRepeatedTicks = value;
+                _lastRepeated = new DateTime(_lastRepeatedTicks);
+            }
+        }
     }
 }

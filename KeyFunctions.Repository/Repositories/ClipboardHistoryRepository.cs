@@ -22,18 +22,32 @@ namespace KeyFunctions.Repository.Repositories
             return historyList.ToList();
         }
 
-        public static void AddOne()
+        public static void AddOrUpdateOne(string clipData)
         {
-            using var dbConnection = DbContext.GetConnection();
-            //dbConnection.Open();
+            var datetimeNow = DateTime.Now;
 
-            var data = new ClipboardHistoryCore
+            using var dbConnection = DbContext.GetConnection();
+
+            string query = "SELECT * from ClipboardHistory WHERE ClipData = @ClipData LIMIT 1";
+            var param = new { ClipData = clipData };
+            var result = dbConnection.Query<ClipboardHistoryCore>(query, param).FirstOrDefault();
+
+            if (result is null)
             {
-                ClipData = "asdfasdf",
-                ClipDataType = ClipDataType.Text,
-                DateTime = DateTime.Now,
-            };
-            dbConnection.Execute("insert into ClipboardHistory (ClipData, ClipDataType, DateTimeStamp) values (@ClipData, @ClipDataType, @DateTimeStamp)", data);
+                var data = new ClipboardHistoryCore
+                {
+                    ClipData = clipData,
+                    ClipDataType = ClipDataType.Text,
+                    DateTime = datetimeNow,
+                    LastRepeated = datetimeNow,
+                };
+                dbConnection.Execute("insert into ClipboardHistory (ClipData, ClipDataType, DateTimeStamp, LastRepeatedTicks) values (@ClipData, @ClipDataType, @DateTimeStamp, @LastRepeatedTicks)", data);
+            }
+            else
+            {
+                var updateParam = new { LastRepeatedTicks = datetimeNow.Ticks, Id = result.Id };
+                dbConnection.Execute("UPDATE ClipboardHistory SET LastRepeatedTicks = @LastRepeatedTicks WHERE Id = @Id", updateParam);
+            }
         }
     }
 }
