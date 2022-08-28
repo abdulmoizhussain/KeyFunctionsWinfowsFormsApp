@@ -9,12 +9,12 @@ using System.Text.RegularExpressions;
 
 namespace KeyFunctionsWinfowsFormsApp
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
         private readonly ClipboardListenerService _clipboardListenerService;
         private readonly KeyboardListenerService _keyboardListenerService;
 
-        public Form1()
+        public MainWindow()
         {
             InitializeComponent();
 
