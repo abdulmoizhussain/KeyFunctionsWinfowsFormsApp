@@ -22,7 +22,7 @@ namespace KeyFunctionsWinfowsFormsApp
             _clipboardListenerService = new ClipboardListenerService(this);
         }
 
-        private void Form1_OnLoad(object sender, EventArgs e)
+        private void MainWindow_OnLoad(object sender, EventArgs e)
         {
             ClipboardService.CreateImagesDirectory();
 
@@ -30,7 +30,7 @@ namespace KeyFunctionsWinfowsFormsApp
             //ClipboardService.CopyImageFromDibFalseBytesFile();
         }
 
-        private void Form1_OnClosing(object sender, FormClosingEventArgs e)
+        private void MainWindow_OnClosing(object sender, FormClosingEventArgs e)
         {
             _keyboardListenerService.UnSubscribe();
             _keyboardListenerService.Dispose();
@@ -41,15 +41,15 @@ namespace KeyFunctionsWinfowsFormsApp
             _clipboardListenerService.WndProc(ref message, base.WndProc);
         }
 
-        private void checkBoxSetCursorPosition_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_SetCursorPosition_CheckedChanged(object sender, EventArgs e)
         {
             EnableOrDisbleKeyboardListener();
         }
-        private void checkBoxMaintainClipHistory_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_MaintainClipHistory_CheckedChanged(object sender, EventArgs e)
         {
             EnableOrDisbleClipboardListener();
         }
-        private void checkBoxCleanSpecialCharacters_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_CleanSpecialCharacters_CheckedChanged(object sender, EventArgs e)
         {
             EnableOrDisbleClipboardListener();
         }
