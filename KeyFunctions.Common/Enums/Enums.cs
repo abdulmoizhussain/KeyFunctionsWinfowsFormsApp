@@ -8,8 +8,9 @@ namespace KeyFunctions.Common.Enums
 {
     public enum ClipDataType
     {
+        Unhandled = 0,
         Text = 1,
-        Base64 = 2,
+        Image = 2,
     }
 
     /// <summary>

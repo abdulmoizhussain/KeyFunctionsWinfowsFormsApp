@@ -21,11 +21,14 @@ namespace KeyFunctionsWinfowsFormsApp.Services
     {
         public delegate void WndProcDelegate(ref Message message);
 
-        private static readonly Regex s_regexMis = new Regex("mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_regexMis = new Regex("^mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex s_regexMisReplacer = new Regex("^mis ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex s_regexCleaner = new Regex("[^a-zA-Z0-9 ]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly Form _form;
 
         private IntPtr _clipboardViewerNext;
+        private DateTime _subscriptionTime;
 
         public bool MaintainClipHistory { get; set; }
         public bool CleanSpecialCharactersFromClip { get; set; }
@@ -38,6 +41,7 @@ namespace KeyFunctionsWinfowsFormsApp.Services
 
         public void Subscribe()
         {
+            _subscriptionTime = DateTime.Now;
             //_clipboardViewerNext = User32.SetClipboardViewer(this.Handle);
             _clipboardViewerNext = User32.SetClipboardViewer(_form.Handle);
             IsSubscribed = true;
@@ -63,7 +67,12 @@ namespace KeyFunctionsWinfowsFormsApp.Services
                 case Msgs.WM_DRAWCLIPBOARD:
 
                     // Here you will be able to grab clipboard data.
-                    PerformClipboardManipulation(message);
+                    // whenever we subscribe to the clipboard listener, it automatically takes the current clipboard data which was copied before subscription and provides us as first update after subscription, which we do not want in this app.
+                    // This why, have put this if-check below.
+                    if ((DateTime.Now - _subscriptionTime).TotalMilliseconds > 1500)
+                    {
+                        PerformClipboardManipulation(message);
+                    }
 
                     //
                     // Each window that receives the WM_DRAWCLIPBOARD message 
@@ -118,28 +127,52 @@ namespace KeyFunctionsWinfowsFormsApp.Services
             }
         }
 
-        private void PerformClipboardManipulation(Message message)
+        private void PerformClipboardManipulation(Message _)
         {
-            //Debug.WriteLine("WindowProc DRAWCLIPBOARD: " + message.Msg, "WndProc");
-            bool isText = ClipboardService.TryGetText(out string clipText);
-            Console.WriteLine($"clip: {clipText}");
+            ClipDataType clipDataType = ClipboardService.GetDataType();
 
+            if (clipDataType.Equals(ClipDataType.Text))
+            {
+                string clipText = ClipboardService.GetText();
+                Console.WriteLine($"clip: {clipText}");
+                TryPreserveClipboardText(clipText);
+                TryCleanSpecialCharacterFromClipboard(clipText);
+            }
+            else if (clipDataType.Equals(ClipDataType.Image))
+            {
+                TryPreserveClipboardImage();
+            }
+        }
+
+        private void TryPreserveClipboardText(string clipText)
+        {
             if (MaintainClipHistory)
             {
-                // save the clip.
-                if (isText)
-                {
-                    ClipboardHistoryRepository.AddOrUpdateOne(clipText, ClipDataType.Text);
-                }
+                Task.Run(() => ClipboardHistoryRepository.AddOrUpdateOne(clipText, ClipDataType.Text));
             }
+        }
 
-            if (CleanSpecialCharactersFromClip)
+        private void TryPreserveClipboardImage()
+        {
+            if (MaintainClipHistory)
+            {
+                //ClipboardService.SaveImageAsDibBytes();
+                //ClipboardService.TrySaveClipboardImageAndGetFileName(out string filename);
+                //ClipboardService.GetImageFromClipboard();
+                //ClipboardService.TrySaveRawImageData();
+                //Task.Run(() => ClipboardHistoryRepository.AddOrUpdateOne(filename, ClipDataType.Image));
+            }
+        }
+
+        private void TryCleanSpecialCharacterFromClipboard(string clipText)
+        {
+            if (CleanSpecialCharactersFromClip && s_regexMis.IsMatch(clipText))
             {
                 // clean the clipboard text
-                if (isText && s_regexMis.IsMatch(clipText))
-                {
+                string clipTextCleaned = s_regexCleaner.Replace(clipText, " ");
+                string cleanedText = s_regexMisReplacer.Replace(clipTextCleaned, "").Trim();
 
-                }
+                ClipboardService.SetText(cleanedText);
             }
         }
     }

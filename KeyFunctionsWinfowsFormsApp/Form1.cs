@@ -24,7 +24,10 @@ namespace KeyFunctionsWinfowsFormsApp
 
         private void Form1_OnLoad(object sender, EventArgs e)
         {
-            var asdf = ClipboardHistoryRepository.GetAll();
+            ClipboardService.CreateImagesDirectory();
+
+            //ClipboardService.CopyImageFromDibBytesFile();
+            //ClipboardService.CopyImageFromDibFalseBytesFile();
         }
 
         private void Form1_OnClosing(object sender, FormClosingEventArgs e)
