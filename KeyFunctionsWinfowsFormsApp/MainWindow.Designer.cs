@@ -75,7 +75,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Location = new System.Drawing.Point(12, 87);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(657, 351);
+            this.listView1.Size = new System.Drawing.Size(776, 351);
             this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
