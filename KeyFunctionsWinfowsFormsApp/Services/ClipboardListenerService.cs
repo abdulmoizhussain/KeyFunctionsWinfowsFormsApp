@@ -21,9 +21,9 @@ namespace KeyFunctionsWinfowsFormsApp.Services
     {
         public delegate void WndProcDelegate(ref Message message);
 
-        private static readonly Regex s_regexMis = new Regex("^mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static readonly Regex s_regexMisReplacer = new Regex("^mis ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        private static readonly Regex s_regexCleaner = new Regex("[^a-zA-Z0-9 ]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex s_regexMis = new("^mis .*", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex s_regexMisReplacer = new("^mis ", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex s_regexCleaner = new("[^a-zA-Z0-9 ]+", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private readonly Form _form;
 
